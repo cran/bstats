@@ -28,7 +28,7 @@ ld50.logitfit <- function(rate, dose, p = 0.5) {
   lx05 = lx02*lx03
   y0 = 1/(1+exp(-b[1L]-b[2L]*x0-b[3L]*lx0))
   if(any(p>=1|p<=0))stop("Invalid 'p' in 'LC(p)'.")
-  x.p <- .Fortran(F_nrlogit, as.double(median(dose0)),
+  x.p <- .Fortran(.F_nrlogit, as.double(median(dose0)),
                   as.double(b),p=as.double(p),as.integer(length(p)))$p
   SE <- NA
   res <- structure(x.p, SE = SE, p = p,

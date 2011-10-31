@@ -1,6 +1,5 @@
 \name{dw.test}
 \alias{dw.test}
-\alias{F_pan}
 
 \encoding{latin1}
 \title{Durbin-Watson Test}

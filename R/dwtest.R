@@ -54,7 +54,7 @@ dw.test <- function(formula, order.by = NULL, alternative = c("greater", "two.si
       if(any(Im(ev)>tol)) warning("imaginary parts of eigenvalues discarded")
       ev <- Re(ev)
       ev <- ev[ev>tol]
-      pdw <- function(dw) .Fortran(F_pan, as.double(c(dw,ev)),
+      pdw <- function(dw) .Fortran(.F_pan, as.double(c(dw,ev)),
                                    as.integer(length(ev)),
                                    as.double(0), as.integer(iterations),
                                    x=double(1))$x

@@ -11,10 +11,15 @@
 #include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 
+void orexactl(int *counts, double *alpha, double *out);
+void orexactu(int *counts, double *alpha, double *out);
+
 void F77_SUB(pan)(double *A, int *M, double *C, int *N, double *RESULT);
 void F77_SUB(nrlogit)(double *x0, double *betas, double *ps, int *n);
 
 static const R_FortranMethodDef FortEntries[] = {
+  {"orexactl", (DL_FUNC) & orexactl, 3},
+  {"orexactu", (DL_FUNC) & orexactu, 3},
   {"pan", (DL_FUNC) &F77_SUB(pan), 5},
   {"nrlogit", (DL_FUNC) &F77_SUB(nrlogit),  4},
   {NULL, NULL, 0}

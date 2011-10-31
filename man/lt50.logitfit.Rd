@@ -1,6 +1,5 @@
 \name{ld50.logitfit}
 \alias{ld50.logitfit}
-\alias{F_nrlogit}
 
 \title{
 Predict Doses for Binomial Assay model (using counts)
