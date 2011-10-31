@@ -1,0 +1,6 @@
+useDynLib(bstats, .registration = TRUE, .fixes = "F_")
+export(.bstatsConnect)
+##export everything that does not start with a .
+exportPattern("^[^\\.]")
+
+##importFrom(stats, dnorm, quantile, var)

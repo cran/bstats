@@ -1,0 +1,10 @@
+History:
+
+==> 2011-09-27	
+Version 0.01-1: to initialize the package. Add three functions: (1) edf; (2) lm.ci (3) model.test.
+
+==> Version 0.01-2: residual.plot, influential.plot and predictor.plot
+
+==> Version 0.01-3: exporting the results in influential plot.
+
+==> Change package name to stats (10/26/2011)
