@@ -6,12 +6,9 @@
 \description{
 Birth data for singleton live births with gestational age at least 38 weeks.
 }
-\format{A data frame with 28435 observations on 12 variables.
+\format{A data frame with 400 observations on 9 variables.
   \tabular{lll}{
-    \code{Year}  \tab numeric  \tab 2006 -- 2009 \cr
     \code{Sex}   \tab character  \tab 'male' or 'female' \cr
-    \code{Live.Still}   \tab factor  \tab 'liveborn' or 'stillborn' \cr
-    \code{Plurality}   \tab numeric  \tab 'singleton' or others \cr
     \code{Gestation}  \tab numeric  \tab Gestational age (in weeks). \cr
     \code{Weight}   \tab numeric  \tab birth weight. \cr
     \code{Length}   \tab numeric  \tab height. \cr

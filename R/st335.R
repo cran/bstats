@@ -311,9 +311,10 @@ stop("No default method for vif. Sorry.")
 
 vif.lm <- function(object, ...) {
   nam <- names(object$model)
-  if(k <- match("(weights)", nam, nomatch = F))
-    stop("weighted regressions are not supported")
-  
+  if(k <- match("(weights)", nam, nomatch = F)){
+    out =NULL
+    warning("weighted regressions are not supported")
+  }
   V <- summary(object)$cov.unscaled
   Vi <- crossprod(model.matrix(object))
   nam <- names(coef(object))
@@ -326,24 +327,30 @@ vif.lm <- function(object, ...) {
     v2 <- diag(Vi)
     warning("No intercept term detected. Results may surprise.")
   }
-  ##  VIF = structure(v1*v2, names = nam)
-  ##  VIF greater than 10 needs to be investigated
-  Vi = object$model[,-1]; 
-  V = eigen(cor(Vi))$values
-  kappa = V[1]/V[length(V)]
-  ## eigenvalues suppose to be not small if no presence of
-  ##  collinarity.  Zero if perfect multicollinearity. CIndex =
-  ##  structure(V,names=nam)
-  stat = data.frame(VIF = v1*v2, eigenvalue=V)
-  SumEigen = sum(1/V)
-#  cat("\n\n (Multi-)Collineary presents if any of VIF > 10;")
-#  cat("\n Or if The Condition number is larger than 15;")
-#  cat("\n Or if sum(1/eigenvalue) is larger 5p (=",
-#      5*length(V), ")\n\n")
-  rnames = c("Condition Number","Sum(1/eigenvalue)")
-  stat2 = c(kappa, SumEigen)
-  Comments = c("Collinear if CN > 15",paste("Collinear if Sum > ", 5*length(V)))
-  stats = data.frame(Stat = stat2, Comments = Comments)
-  row.names(stats) = rnames
-  list(VIF.Eigenvalue = stat, Stat=stats )
+  if(length(v1)<=1){
+    out = NULL
+    warning("Collinearity not appliacble for simple linear regression models")
+  }else{
+    ##  VIF = structure(v1*v2, names = nam)
+    ##  VIF greater than 10 needs to be investigated
+    Vi = object$model[,-1]; 
+    V = eigen(cor(Vi))$values
+    kappa = V[1]/V[length(V)]
+    ## eigenvalues suppose to be not small if no presence of
+    ##  collinarity.  Zero if perfect multicollinearity. CIndex =
+    ##  structure(V,names=nam)
+    stat = data.frame(VIF = v1*v2, eigenvalue=V)
+    SumEigen = sum(1/V)
+                                        #  cat("\n\n (Multi-)Collineary presents if any of VIF > 10;")
+                                        #  cat("\n Or if The Condition number is larger than 15;")
+                                        #  cat("\n Or if sum(1/eigenvalue) is larger 5p (=",
+                                        #      5*length(V), ")\n\n")
+    rnames = c("Condition Number","Sum(1/eigenvalue)")
+    stat2 = c(kappa, SumEigen)
+    Comments = c("Collinear if CN > 15",paste("Collinear if Sum > ", 5*length(V)))
+    stats = data.frame(Stat = stat2, Comments = Comments)
+    row.names(stats) = rnames
+    out = list(VIF.Eigenvalue = stat, Stat=stats )
+  }
+  out
 } 

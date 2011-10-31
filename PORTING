@@ -19,3 +19,4 @@ Raddons Version 0.01-1: to initialize the package. Add three functions: (1) edf;
    restrict the htest of assumptions on weighted regression. Add data 
    birth for final project for ST 335 for Fall 2011.
    11/14/11: adding PRESS to model.check
+==> Version 1.0-3: update information about data(birth).
