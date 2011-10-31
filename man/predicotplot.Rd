@@ -8,12 +8,13 @@
 Draw added-variable plot (av) or redidual plus component (rc) plot.
 }
 \usage{
-predictor.plot(lmobj,type='av',ID=FALSE)
+predictor.plot(lmobj,type='av',ID=FALSE, col=1)
 }
 \arguments{
   \item{lmobj}{An R object by fitting an OLS model to a data set.}
   \item{type}{Plot type.  'av': added variable plot; 'rc': residual plus component plot.}
   \item{ID}{Whether to identify points in the plots. Default: FALSE}
+  \item{col}{Color of the plot.}
 }
 \value{
   Missing value not allowed.

@@ -1,7 +1,38 @@
 ## to compute the confidence intervals of the regression parameters
 
+model.check <- function(lmobj){
+  MNAME <- lmobj$call
+  stopifnot(class(lmobj)=='lm')
+  ## normality test
+  nout = shapiro.test(rstandard(lmobj))
+  dname = "W"; pv = nout$p.value; tmethod = nout$method; stat = nout$statistic
+  ## test of autocorrelation
+  nout = dw.test(lmobj)
+  dname = c(dname,"DW"); pv = c(pv,nout$p.value);
+  tmethod = c(tmethod,nout$method);
+  stat = c(stat,nout$statistic)
+  ## bp test for homoscedasticity
+  nout = bptest(lmobj)
+  dname = c(dname,"BP"); pv = c(pv,nout$p.value);
+  tmethod = c(tmethod,nout$method);
+  stat = c(stat,nout$statistic)
+  ## white test for homoscedasticity
+  nout = white.test(lmobj)
+  dname = c(dname,"LM"); pv = c(pv,nout$p.value);
+  tmethod = c(tmethod,nout$method);
+  stat = c(stat,nout$statistic)
+    
+  out = data.frame(statistic = stat, p.value=pv, Description=tmethod)
+  row.names(out) = dname
+  RVAL <- list(data.name = MNAME, x = out,VIF=vif(lmobj))
+  return(RVAL)
+}
+
+
 lm.ci <- function(lmobj,level=0.95)
   {
+    if(class(lmobj)!='lm')
+      stop("Invalid class type!")
     df0 = lmobj$df
     tmp = summary(lmobj)$coe
     tnames = row.names(tmp)
@@ -16,24 +47,48 @@ lm.ci <- function(lmobj,level=0.95)
 
 model.test <- function(fmobj,rmobj,alpha=0.05)
   {
+    if(class(fmobj)!='lm' || class(rmobj)!='lm')
+      stop("Invalid class type(s)!")
+    tm1 = names(fmobj$model)[-1]#attr(fmobj$terms,"term.labels")
+    tm2 = names(rmobj$model)[-1]#attr(rmobj$terms,"term.labels")
+    if(length(tm1)>length(tm2)){
+      sele = match(tm2,tm1)
+    }else{
+      sele = match(tm1,tm2)
+      tmp = fmobj; fmobj = rmobj; rmobj = tmp;
+    }
+    FM = fmobj$call$formula
+    RM = rmobj$call$formula
+    tm1 = names(fmobj$model)[-1]#attr(fmobj$terms,"term.labels")
+    tm2 = names(rmobj$model)[-1]#attr(rmobj$terms,"term.labels")
+    if(any(is.na(sele)))
+      stop("The two models are not 'Full model' and 'Reduced model'.")
     fmout = anova(fmobj)
     rmout = anova(rmobj)
     fmdf = fmout[nrow(fmout),1]
     rmdf = rmout[nrow(rmout),1]
     fmsse = fmout[nrow(fmout),2]
     rmsse = rmout[nrow(rmout),2]
-    if(rmsse<fmsse){
-      tmp = rmsse; rmsse=fmsse; fmsse=tmp;
-      tmp = rmdf; rmdf=fmdf; fmdf=tmp;
-    }
     F = (rmsse-fmsse)/(rmdf-fmdf)/fmsse*fmdf
     pv = 1-pf(F,rmdf-fmdf,fmdf)
     cv = qf(1-alpha,rmdf-fmdf,fmdf)
     c("Test Stat."=F, "p-value"=pv, "Critical value"=cv)
+    out = structure(list(F=F, df1 = rmdf-fmdf, df2 = fmdf,
+      pvalue=pv, CriticalValue=cv))
+    cat("\n\nNull hypothesis (H0):\t\t the reduced model (RM) is adequate.")
+    cat("\nAlternative hypothesis (H1):\t the full model (FM) is adequate.")
+    cat("\n\nF-statistic: ", format(F,3),
+        " on ", round(rmdf-fmdf,0), " and ",
+        round(fmdf,0), "DF, p-value: ", format(pv,10))
+    cat("\n\nRM: ", paste(RM[2],RM[1],RM[3]) )
+    cat("\nFM: ", paste(FM[2],FM[1],FM[3]),"\n\n")
+    invisible(out)
   }
 
 
-influential.plot <- function(lmobj,type='hadi',ID=FALSE){
+influential.plot <- function(lmobj,type='hadi',ID=FALSE,col=1){
+  if(class(lmobj)!='lm')
+    stop("Invalid class type!")
   type = match.arg(tolower(type),
     c("hadi","potential-residual","dfits","leverage","cook","hat"))
   stdres = rstandard(lmobj)
@@ -47,46 +102,55 @@ influential.plot <- function(lmobj,type='hadi',ID=FALSE){
   Hi = h/(1-h) + (p+1)/(1-h)*di2/(1-di2) # (2) Hadi's 
   DFIT = dffits(lmobj) # Welsch and Kuh Measure
   CookD = cooks.distance(lmobj) # Cook's distance
+  tmp0 = influence.measures(lmobj)
+  infpts = (apply(signif(tmp0$is.inf),1,sum) > 0)
+  infpts = c(1:n)[infpts]
+  ##  if(is.null(col)) {
+    ##    col = rep(1,n); col[infpts] = 2;
+  ##  }
   out = cbind(Ri = stdres, Leverage=h,Hadi = Hi, DFIT=DFIT,CookD=CookD)
   if(type=="hadi"){
     Index = 1:length(di2)
-    plot(Hi~Index)
+    plot(Hi~Index,col=col)
     if(ID)    identify(Hi~Index)
   }else if(type=='potential-residual'){
     di2 = (lmobj$res)^2/tmp[k,2]
     Y = h/(1-h)
     X =  (p+1)/(1-h)*di2/(1-di2)
-    plot(Y~X, ylab="Potential",xlab="Residual")
+    plot(Y~X, ylab="Potential",xlab="Residual",col=col)
     if(ID)    identify(Y~X)
   }else if(type == "leverage" || type == "hat"){
-    plot(h,type='h')
+    plot(h,type='h',col=col)
     tmp = 2*(p+1)/n
     abline(h=tmp, col='gray')
   }else if(type == "dfits"){
     tmp = 2*sqrt((p+1)/(n-p-1)) 
-    plot(DFIT,type='h')
+    plot(DFIT,type='h',col=col)
     abline(h=c(-tmp,tmp), col='gray')
   }else if(type == "cook"){
-    plot(CookD,type='h')
+    plot(CookD,type='h',col=col)
     abline(h=1, col='gray')
   }
-  invisible(round(out,3))
+  res = structure(list(measures = out, influence.points=infpts))
+  invisible(res)
 }
 
 
 
-residual.plot <- function(lmobj,type='fitted'){
+residual.plot <- function(lmobj,type='fitted',col=1){
+  if(class(lmobj)!='lm')
+    stop("Invalid class type!")
   type = match.arg(tolower(type),c("fitted","index","predictor","qqplot"))
   stdres = rstandard(lmobj)
   if(type=="fitted"){
     fittedvalue = lmobj$fitted
     par(mfrow=c(1,1))
-    plot(stdres~fittedvalue,ylab="Standardized Residuals",xlab="Fitted values")
+    plot(stdres~fittedvalue,ylab="Standardized Residuals",xlab="Fitted values",col=col)
     abline(h=c(-2,2),col="gray")
   }else if(type=="index"){
     Index = 1:nrow(lmobj$mode)
     par(mfrow=c(1,1))
-    plot(stdres~Index,ylab="Standardized Residuals",xlab="Index")
+    plot(stdres~Index,ylab="Standardized Residuals",xlab="Index",col=col)
     abline(h=c(-2,2),col="gray")
   }else if(type=='predictor'){
     k = ncol(lmobj$model)-1
@@ -97,7 +161,7 @@ residual.plot <- function(lmobj,type='fitted'){
     par(mfrow=c(j,i))
     for(l in 2:(k+1)){
       x = lmobj$mode[,l]
-      plot(stdres~x,ylab="Standardized Residuals",xlab=xnames[l])
+      plot(stdres~x,ylab="Standardized Residuals",xlab=xnames[l],col=col)
       abline(h=c(-2,2),col="gray")
     }
   }else if(type=='qqplot'){
@@ -108,7 +172,9 @@ residual.plot <- function(lmobj,type='fitted'){
   }else stop("'type' not supported!")
 }
 
-predictor.plot <- function(lmobj,type='av',ID=FALSE){
+predictor.plot <- function(lmobj,type='av',ID=FALSE,col=1){
+  if(class(lmobj)!='lm')
+    stop("Invalid class type!")
   type = match.arg(tolower(type),c("av","rc"))
   k = ncol(lmobj$model)-1
   if(!is.null(lmobj$weights)) k = k - 1
@@ -137,7 +203,7 @@ predictor.plot <- function(lmobj,type='av',ID=FALSE){
       yres = lm(model1,data=lmobj$model)$res
       xres = lm(model2,data=lmobj$model)$res
       
-      plot(yres~xres,
+      plot(yres~xres,,col=col,
            ylab=paste(xnames[1],"-Residuals",sep=""),
            xlab=paste(xnames[l],"-Residuals",sep=""))
       abline(lm(yres~xres)$coef,col='gray')
@@ -151,7 +217,7 @@ predictor.plot <- function(lmobj,type='av',ID=FALSE){
       xres = betas[l]*xs[,l]
       yres = lmobj$res + xres
         
-      plot(yres~xres,
+      plot(yres~xres,,col=col,
            ylab="Residuals+Component",
            xlab=xnames[l])
       abline(lm(yres~xres)$coef,col='gray')
@@ -164,6 +230,8 @@ predictor.plot <- function(lmobj,type='av',ID=FALSE){
 .myvar <- function(x) sum(x^2)/(length(x)-1)
 
 wls <- function(lmobj,group){
+  if(class(lmobj)!='lm')
+    stop("Invalid class type!")
   if(is.factor(group)) group = as.numeric(group)
   res = lmobj$res
   sigs = tapply(res,group,.myvar)
@@ -178,6 +246,8 @@ ac.default <- function(lmobj,type='cochrane', ...)
 stop("No default method for ac. Sorry.")
 
 ac.lm <- function(lmobj,type='cochrane',...){
+  if(class(lmobj)!='lm')
+    stop("Invalid class type!")
   type = match.arg(tolower(type),c("cochrane","iterative"))
   res = lmobj$res; n=length(res)
   rhohat = sum(res[-1]*res[-n])/sum(res^2)

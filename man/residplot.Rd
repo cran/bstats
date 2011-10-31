@@ -8,11 +8,16 @@
 Draw residual plots for an ordinary regression model.
 }
 \usage{
-residual.plot(lmobj,type='fitted')
+  residual.plot(lmobj,type='fitted',col=1)
 }
 \arguments{
   \item{lmobj}{An R object by fitting an OLS model to a data set.}
-  \item{type}{Type of residual plot(s): 'fitted', residuals against fitted values; 'index', residuals against index; 'predictor', residuals against each of the predictors in the fitted model; 'qqplot', qq-plot of the standardized residuals to check the normality assumption.}
+  \item{type}{Type of residual plot(s): 
+  'fitted', residuals against fitted values; 
+  'index', residuals against index; 
+  'predictor', residuals against each of the predictors in the fitted model; 
+  'qqplot', qq-plot of the standardized residuals to check the normality assumption.}
+  \item{col}{Color of the plot.}
 }
 \value{
 Missing values are not allowed.

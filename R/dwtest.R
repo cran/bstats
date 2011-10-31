@@ -97,7 +97,7 @@ dw.test <- function(formula, order.by = NULL, alternative = c("greater", "two.si
     "greater" = "true autocorrelation is greater than 0")
 
   names(dw) <- "DW"
-  RVAL <- list(statistic = dw, method = "Durbin-Watson test",
+  RVAL <- list(statistic = dw, method = "Durbin-Watson autocorrelation test",
     alternative = alternative, p.value= pval, data.name=dname)
   class(RVAL) <- "htest"
   return(RVAL)

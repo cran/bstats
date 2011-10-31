@@ -8,12 +8,13 @@
 Draw plots for the influence measures.
 }
 \usage{
-influential.plot(lmobj,type='hadi',ID=FALSE)
+  influential.plot(lmobj,type='hadi',ID=FALSE,col=1)
 }
 \arguments{
   \item{lmobj}{An R object by fitting an OLS model to a data set.}
   \item{type}{Plot type.  'hadi': the Hadi's influence Measures; 'potential-residual': potential-residual plot; 'dfits': DFITS plot; 'hat': leverage plot; 'cook': Cook's distance.}
   \item{ID}{Whether to identify points in the plots. Default: FALSE}
+  \item{col}{Color of the plot.}
 }
 \value{
   Output the influence measures, including leverage values (Leverage), Hadi's measure (Hadi), Welsch and Kuh Measure (DFIT) and Cook's distance (CookD).  In addition, the standard residuals are also exported.

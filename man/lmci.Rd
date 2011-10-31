@@ -25,8 +25,8 @@ To compute the confidene interval of the regression parameters.
 
 \examples{
 
-data(ofc)
-attach(ofc)
+data(birth)
+attach(birth)
 lm0 = lm(Head~Weight)
 lm.ci(lm0)
 lm1 = lm(Head~Weight+Gestation)
