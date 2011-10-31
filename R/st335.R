@@ -3,28 +3,47 @@
 model.check <- function(lmobj){
   MNAME <- lmobj$call
   stopifnot(class(lmobj)=='lm')
-  ## normality test
-  nout = shapiro.test(rstandard(lmobj))
-  dname = "W"; pv = nout$p.value; tmethod = nout$method; stat = nout$statistic
-  ## test of autocorrelation
-  nout = dw.test(lmobj)
-  dname = c(dname,"DW"); pv = c(pv,nout$p.value);
-  tmethod = c(tmethod,nout$method);
-  stat = c(stat,nout$statistic)
-  ## bp test for homoscedasticity
-  nout = bptest(lmobj)
-  dname = c(dname,"BP"); pv = c(pv,nout$p.value);
-  tmethod = c(tmethod,nout$method);
-  stat = c(stat,nout$statistic)
-  ## white test for homoscedasticity
-  nout = white.test(lmobj)
-  dname = c(dname,"LM"); pv = c(pv,nout$p.value);
-  tmethod = c(tmethod,nout$method);
-  stat = c(stat,nout$statistic)
+  p = length(lmobj$coef)
+  n = length(lmobj$resi)
+  h <- hat(model.matrix(lmobj)) # (1) hat matrix: leverage values
+  SSE = sum((lmobj$resi)^2)
+  RMS = SSE/lmobj$df.residual
+  Radj = summary(lmobj)$adj.r.squared
+  Cp = SSE/(summary(lmobj)$sigma)^2+2*p-n
+  AIC = n*log2(SSE/n)+2*p
+  BIC = n * log2(SSE/n)+p*log2(n)
+  AICc = AIC + 2.*(p+2.)*(p+3.)/(n-p-3.)
+  PRESS = sum( (lmobj$resi/(1-h))^2 )
+  GOF = c(RMS=RMS,Radj=Radj,Cp=Cp,PRESS=PRESS,AIC=AIC,BIC=BIC, AICc=AICc)
+  nam <- names(lmobj$model)
+  if(k <- match("(weights)", nam, nomatch = F)){
+    warning("Assumption checks are not supported for weighted regressions!")
+    RVAL <- list(data.name = MNAME, Criteria = GOF)
+  }else{
+    ## normality test
+    nout = shapiro.test(rstandard(lmobj))
+    dname = "W"; pv = nout$p.value; tmethod = nout$method; stat = nout$statistic
+    ## test of autocorrelation
+    nout = dw.test(lmobj)
+    dname = c(dname,"DW"); pv = c(pv,nout$p.value);
+    tmethod = c(tmethod,nout$method);
+    stat = c(stat,nout$statistic)
+    ## bp test for homoscedasticity
+    nout = bptest(lmobj)
+    dname = c(dname,"BP"); pv = c(pv,nout$p.value);
+    tmethod = c(tmethod,nout$method);
+    stat = c(stat,nout$statistic)
+    ## white test for homoscedasticity
+    nout = white.test(lmobj)
+    dname = c(dname,"LM"); pv = c(pv,nout$p.value);
+    tmethod = c(tmethod,nout$method);
+    stat = c(stat,nout$statistic)
     
-  out = data.frame(statistic = stat, p.value=pv, Description=tmethod)
-  row.names(out) = dname
-  RVAL <- list(data.name = MNAME, x = out,VIF=vif(lmobj))
+    out = data.frame(statistic = stat, p.value=pv, Description=tmethod)
+    row.names(out) = dname
+    RVAL <- list(data.name = MNAME,  Criteria = GOF, HTests = out,VIF=vif(lmobj))
+  }
+  
   return(RVAL)
 }
 
@@ -291,6 +310,10 @@ vif.default <- function(object, ...)
 stop("No default method for vif. Sorry.")
 
 vif.lm <- function(object, ...) {
+  nam <- names(object$model)
+  if(k <- match("(weights)", nam, nomatch = F))
+    stop("weighted regressions are not supported")
+  
   V <- summary(object)$cov.unscaled
   Vi <- crossprod(model.matrix(object))
   nam <- names(coef(object))
@@ -303,5 +326,24 @@ vif.lm <- function(object, ...) {
     v2 <- diag(Vi)
     warning("No intercept term detected. Results may surprise.")
   }
-  structure(v1*v2, names = nam)
+  ##  VIF = structure(v1*v2, names = nam)
+  ##  VIF greater than 10 needs to be investigated
+  Vi = object$model[,-1]; 
+  V = eigen(cor(Vi))$values
+  kappa = V[1]/V[length(V)]
+  ## eigenvalues suppose to be not small if no presence of
+  ##  collinarity.  Zero if perfect multicollinearity. CIndex =
+  ##  structure(V,names=nam)
+  stat = data.frame(VIF = v1*v2, eigenvalue=V)
+  SumEigen = sum(1/V)
+#  cat("\n\n (Multi-)Collineary presents if any of VIF > 10;")
+#  cat("\n Or if The Condition number is larger than 15;")
+#  cat("\n Or if sum(1/eigenvalue) is larger 5p (=",
+#      5*length(V), ")\n\n")
+  rnames = c("Condition Number","Sum(1/eigenvalue)")
+  stat2 = c(kappa, SumEigen)
+  Comments = c("Collinear if CN > 15",paste("Collinear if Sum > ", 5*length(V)))
+  stats = data.frame(Stat = stat2, Comments = Comments)
+  row.names(stats) = rnames
+  list(VIF.Eigenvalue = stat, Stat=stats )
 } 
