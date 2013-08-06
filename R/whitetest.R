@@ -32,18 +32,28 @@ white.test <- function(lmobj)
   formula1 = paste(fml[2],fml[1],fml[3])
   pvs = attr(lmobj$terms,"term.labels")
   k = length(pvs)
-  if(k>=2){
-    for(i in 1:(k-1)){
-      formula1 = paste(formula1, "+I(",pvs[i],"^2)")
-      for(j in (i+1):k)
-        formula1 = paste(formula1,"+I(",pvs[i],"*",pvs[j],")")
+  for(i in 1:k){
+    tmp <- NULL
+    for(j in 1:nchar(pvs[i])){
+      tmp1 <- substr(pvs[i],j,j)
+      if(tmp1 == ":")
+        tmp <- paste(tmp, "*", sep='')
+      else
+        tmp <- paste(tmp, tmp1, sep='')
     }
-    formula1 = paste(formula1, "+I(",pvs[k],"^2)")
-  }else{
-    formula1 = paste(formula1, "+I(",pvs[k],"^2)")
+    pvs[i] <- tmp
+  }
+  formula2 <- paste(fml[2],fml[1])
+  for(i in 1:k){
+    if(i>1)
+      formula2 <- paste(formula2, "+", sep='')
+    formula2 <- paste(formula2, "I(", pvs[i],")",sep='')
+
+    for(j in i:k)
+      formula2 = paste(formula2,"+I(",pvs[i],"*",pvs[j],")", sep='')
   }
   ##  print(formula1)
-  out = lm(as.formula(formula1),data=mydata)
+  out = lm(as.formula(formula2),data=mydata)
   n = length(lmobj$fit)
   LM = summary(out)$r.squared * n  
   names(LM) <- "White"
