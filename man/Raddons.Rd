@@ -8,7 +8,7 @@
 In this paackage, some R functions are written for the convenience of class uses.  Especially for my st 315, st 210, st 335, st 475/575}
 
 \author{
-  B. Wang  \email{bwang@jaguar1.usouthal.edu}
+  B. Wang  \email{bwang@southalabama.edu}
 }
 \keyword{stats}
 

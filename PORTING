@@ -25,3 +25,11 @@ Raddons Version 0.01-1: to initialize the package. Add three functions: (1) edf;
   Add Large-sample score confidence interval for a difference of
   proportions in 2x2 table (Mee 1984, Miettinen and Nurminen 1985, 
   Nurminen 1986)
+
+==> Version 1.1-8-8: fixed a bug in white.test.  Now it can deal with 
+  lm models with intersections and higher order terms.  
+  Multicollinearity problem has been checked.
+
+==> Version (TBD,09/08): (1) add reference to white.test. (2) check for multi-collinearity and the ratio of (sample size)/(# of regressors). (3) Change the package title. (4) add function roc(...).
+
+

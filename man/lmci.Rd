@@ -16,7 +16,7 @@ To compute the confidene interval of the regression parameters.
 }
 
 \author{
-  B. Wang  \email{bwang@jaguar1.usouthal.edu}
+  B. Wang  \email{bwang@southalabama.edu}
 }
 
 \seealso{

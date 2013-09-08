@@ -21,7 +21,7 @@ predictor.plot(lmobj,type='av',ID=FALSE, col=1)
 }
 
 \author{
-  B. Wang  \email{bwang@jaguar1.usouthal.edu}
+  B. Wang  \email{bwang@southalabama.edu}
 }
 \seealso{
  \code{\link{residual.plot}}.

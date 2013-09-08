@@ -16,7 +16,7 @@ To compute the empirical distribution function.}
   \item{y}{A grid of points where the edf will be evaluated.}
 }
 \author{
-  B. Wang  \email{bwang@jaguar1.usouthal.edu}
+  B. Wang  \email{bwang@southalabama.edu}
 }
 \seealso{
  \code{\link{scb}}.

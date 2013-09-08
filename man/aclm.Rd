@@ -33,7 +33,9 @@ Cochrane and Orcutt (1949)
 
 St 335 text
 }
-\author{Wang, B.}
+\author{
+  B. Wang  \email{bwang@southalabama.edu}
+}
 
 \examples{
 

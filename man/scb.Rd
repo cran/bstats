@@ -17,7 +17,7 @@ To compute the simultaneous confidence bands.}
   \item{alpha}{Significance level.  Default 0.05 for a 95 percent confidence level.}
 }
 \author{
-  B. Wang  \email{bwang@jaguar1.usouthal.edu}
+  B. Wang  \email{bwang@southalabama.edu}
 }
 \seealso{
  \code{\link{edf}}.

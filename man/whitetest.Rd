@@ -23,8 +23,11 @@
 }
 
 \references{
-White test, From Wikipedia, the free encyclopedia.
+ White, Halbert, A heteroskedasticity-consistent covariance 
+ matrix estimator and a direct test for heteroskedasticity. 
+ Econometrica 48 (1980), no. 4, 817-838.
 }
+
 
 
 \examples{

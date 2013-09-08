@@ -22,7 +22,7 @@ To test whether a mediator carries the influence on an IV to a DV.
 Missing values are not allowed.
 }
 \author{
-  B. Wang  \email{bwang@jaguar1.usouthal.edu}
+  B. Wang  \email{bwang@southalabama.edu}
 }
 \references{
 MacKinnon, D. P., & Dwyer, J. H. (1993). Estimating mediated effects in prevention studies. \emph{Evaluation Review}, 17, 144-158.
