@@ -46,7 +46,9 @@ oddsratio.data.frame <- function(x,alpha=0.05,...)
   if(n11==0 || n12==0 || n21==0||n22 == 0){
     warning("Asymptotic confidence limits for OR are not computed.")
   }else{
-    v = sum(1/x); z = abs(qnorm(alpha/2))
+    v <- 1/n11+1/n21+1/n12+1/n22
+    ## v = sum(1/x); # Thanks mush go to Dr. Mike Schaffer for finding this bug. 
+    z = abs(qnorm(alpha/2))
     LL = OR * exp(-z*sqrt(v)); UL = OR * exp(z*sqrt(v));
     Asymptotic = c(LL = LL, UL = UL)
     CI = rbind(CI, Asymptotic)
