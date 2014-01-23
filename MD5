@@ -1,7 +1,9 @@
-1c28694b7e3a96f5e1fb85a548fcb13f *DESCRIPTION
+c632054135e209b7e766553b6c19d86d *DESCRIPTION
 20d9034467aca661b4e6f877c0662fdc *NAMESPACE
 06cdd7b4d08d47c9f2b2a51c12f01bb9 *PORTING
+961f65d997e5c1c232ef189d0ca0bc9b *R/EDA.R
 fee9fe2717fff41d761a70aca0685a60 *R/EDF.R
+c61e7e045e597baaa1cdb305f37b28bd *R/assessment.R
 da42c1299c99ce6b348c34c0a1a33330 *R/bptest.R
 fca1ef22c814b57f4d87e4570a05a13b *R/dwtest.R
 8bc679d9bc3c99d87475129fa48a3d62 *R/lt50.R
@@ -14,12 +16,15 @@ de487a1b6fc45be701776ae7f5fd5e4e *R/zzz.R
 28b6b571e4de6ba2862699e718bfd708 *data/birth.tab.gz
 b7ef586764e76867439c8bbe56889b62 *data/edu75.tab.gz
 da3162b00123774f96d35a0e6e2aa2f4 *data/river.csv.gz
+4474389d855f37e3915bfa70e8480a65 *data/st210107.rda
 5034bf2a913c565689ff3288f2b455a6 *data/supervisor.txt.gz
 2f5388b1436362dc308a63efc4ef7e94 *man/Raddons.Rd
 bbb0a0fc69e3667349833b6dc88a5266 *man/aclm.Rd
+23141c723e985bb9e1a4f4ab5933fa4c *man/assessment.Rd
 fee7187eeeca376d129467e250654c39 *man/birth.Rd
 ed2957e2ffb3dfc531ff440aaf136445 *man/bptest.Rd
 7185dbb9e4fbd9ec77aeef565c15ae52 *man/dwtest.Rd
+6d7579dbd1660ebdfd301fbf9bed314f *man/eda.Rd
 88b5f0d34f8d8d8a847d3fecfe41f593 *man/edf.Rd
 eac88eceae5b7d28569171197241f543 *man/edu75.Rd
 d13feffb532a9f8225e37e8c2db93dc8 *man/influenceplot.Rd
@@ -34,6 +39,7 @@ a2e960619d044b174ed3b767be989aed *man/predicotplot.Rd
 00f770bb09733cfdaffa21db590de378 *man/residplot.Rd
 004304847caf32871853104a1566a0a3 *man/river.Rd
 ef8c37406b208d76eff3c319d88cb489 *man/scb.Rd
+17bdbe546a1937b73629a7f96c290121 *man/st210107.Rd
 a2419e2deeacb99dd766988992ece6fa *man/supervisor.Rd
 3ba671f257ea381ca47d205232d0db90 *man/vif.Rd
 38bfdb6aec8529d9420754a8e3872a56 *man/whitetest.Rd
