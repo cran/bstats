@@ -1,6 +1,6 @@
 Package: bstats
-Version: 1.1-11-4
-Date: 2014-1-23
+Version: 1.1-11-5
+Date: 2014-5-4
 Title: Ordinary Regression Analysis with R
 Author: Bin Wang
         <bwang@southalabama.edu>.
@@ -11,7 +11,7 @@ Description: This package collects commonly used procedures or
   graphics, and many others have been implemented in R for 
   some courses taught at the University of South Alabama.
 License: Unlimited
-Packaged: 2014-01-23 14:16:30 UTC; bwang
+Packaged: 2014-05-04 17:31:10 UTC; bwang
 Repository: CRAN
-Date/Publication: 2014-01-23 18:29:32
+Date/Publication: 2014-05-04 21:27:43
 NeedsCompilation: yes
